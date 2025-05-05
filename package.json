@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@mui/material": "^7.0.2",
+    "@reduxjs/toolkit": "^2.7.0",
+    "axios": "^1.9.0",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.5.3"
+  }
+}
