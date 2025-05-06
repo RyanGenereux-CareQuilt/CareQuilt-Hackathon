@@ -28,7 +28,6 @@ const FullCalendarView = () => {
     eventId: null,
   });
 
-  // Wrap handlers to inject state
   const onEventClick = (info) =>
     handleEventClick(info, setForm, setSelectedDate, setOpen, format);
   const onAddOrUpdateEvent = () =>

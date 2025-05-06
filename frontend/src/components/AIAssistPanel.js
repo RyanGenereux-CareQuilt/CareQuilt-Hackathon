@@ -24,7 +24,7 @@ const AIAssistPanel = ({ open, onClose }) => {
     setMessages(prev => [...prev, { from: 'user', text: input }]);
     setInput('');
 
-    // Mock AI reply
+    // This is where the AI response would be
     setTimeout(() => {
       setMessages(prev => [...prev, { from: 'ai', text: "I'm here to assist!" }]);
     }, 600);
@@ -91,7 +91,6 @@ const AIAssistPanel = ({ open, onClose }) => {
         </Stack>
       </Box>
 
-      {/* Input */}
       <Box sx={{ p: 1, borderTop: '1px solid #ccc' }}>
         <Stack direction="row" spacing={1}>
           <TextField
