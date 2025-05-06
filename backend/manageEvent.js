@@ -14,6 +14,11 @@ import {
     return data.id && data.title && data.start && data.end && data.host
   }
   
+  const generateID = () => {
+    const timestamp = new Date().getTime();
+    return timestamp.toString() + Math.random().toString(36).substring(2, 15);
+  }
+  
   const paramsFromData = (data) => {
     return {
       TableName,
@@ -33,9 +38,21 @@ import {
   export const handler = async (event) => {
     const data = event.body;
     switch (event.operation) {
+      case "readAll":
+        const result = await ddbDocClient.send(new ScanCommand({ TableName}))
+        return { statusCode: 200, body: JSON.stringify(result.Items) };
       case "read":
-        return await ddbDocClient.send(new ScanCommand({ TableName}))
+        if (!data.id) {
+          return { statusCode: 400, body: JSON.stringify({ error: 'Missing required fields' }) };
+        }
+        try {
+          const result = await ddbDocClient.send(new GetCommand({ TableName, Key: { id: data.id.toString()} }));
+          return { statusCode: 200, body: JSON.stringify(result.Item) };
+        } catch (err) {
+          return { statusCode: 500, body: JSON.stringify({ error: err.message, data }) };
+        }
       case "create":
+        data.id = generateID();
         if (!isValidEvent(data)) {
           return { statusCode: 400, body: JSON.stringify({ error: 'Missing required fields' }) };
         }
@@ -59,12 +76,11 @@ import {
         }
   
       case "delete":
-        const id = data.id;
-        if (!id) {
+        if (!data.id) {
           return { statusCode: 400, body: JSON.stringify({ error: 'Missing required fields' }) };
         }
         try {
-          await ddbDocClient.send(new DeleteCommand({ TableName, Key: { id } }));
+          await ddbDocClient.send(new DeleteCommand({ TableName, Key: { id: data.id.toString() } }));
           return { statusCode: 200, body: JSON.stringify({ message: 'Event deleted' }) };
         } catch (err) {
           return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
