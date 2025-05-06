@@ -23,14 +23,11 @@ const EventDialog = ({
   const handleAddOrUpdateEvent = async () => {
     try {
       const payload = {
-        operation: 'create',
-        body: {
           title: form.title,
           description: form.description,
           start: new Date(`${form.startdate}`).toISOString(),
           end: new Date(`${form.endDate}`).toISOString(),
           host: 'user', // Replace with actual host data if available
-        },
       };
 
       console.log('Payload:', payload); // Log the payload for debugging
