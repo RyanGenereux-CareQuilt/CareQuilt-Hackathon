@@ -27,8 +27,8 @@ const EventDialog = ({
         body: {
           title: form.title,
           description: form.description,
-          start: `${form.startdate}T${form.startTime}`,
-          end: `${form.endDate}T${form.endTime}`,
+          start: new Date(`${form.startdate}`).toISOString(),
+          end: new Date(`${form.endDate}`).toISOString(),
           host: 'user', // Replace with actual host data if available
         },
       };
