@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getDeviceId } from '../utils/deviceId';
 import {
   Paper,
   Box,
@@ -26,7 +27,7 @@ const AIAssistPanel = ({ open, onClose }) => {
 
     // This is where the AI response would be
     setTimeout(() => {
-      setMessages(prev => [...prev, { from: 'ai', text: "I'm here to assist!" }]);
+      setMessages(prev => [...prev, { from: 'ai', text: 'Your device ID is, ' + getDeviceId() }]);
     }, 600);
   };
 

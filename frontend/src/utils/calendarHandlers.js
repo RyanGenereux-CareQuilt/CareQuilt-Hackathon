@@ -1,3 +1,5 @@
+import { getDeviceId } from './deviceId';
+
 export const handleEventClick = (info, setForm, setSelectedDate, setOpen, format) => {
   const event = info.event;
   const start = new Date(event.start);
@@ -58,7 +60,7 @@ export const handleAddOrUpdateEvent = (form, setEvents, setForm, setError) => {
       description,
       start: start.toISOString(),
       end: end.toISOString(),
-      host: 'user123',
+      host: getDeviceId(),
       attendees: [],
     };
     setEvents(prev => [...prev, newEvent]);
