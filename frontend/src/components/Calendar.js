@@ -63,10 +63,11 @@ const FullCalendarView = () => {
   const onEventClick = (info) =>
     handleEventClick(info, setForm, setSelectedDate, setOpen, format);
   const onAddOrUpdateEvent = () => {
+    const closeDialog = () => setOpen(false);
     if (form.eventId) {
-      handleUpdateEvent(form, setEvents, setForm, setError);
+      handleUpdateEvent(form, setEvents, setForm, setError, closeDialog);
     } else {
-      handleAddEvent(form, setEvents, setForm, setError);
+      handleAddEvent(form, setEvents, setForm, setError, closeDialog);
     };
   }; 
     const onDeleteEvent = (id) =>

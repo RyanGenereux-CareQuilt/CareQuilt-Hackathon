@@ -1,6 +1,5 @@
 import axios from 'axios'; // Import axios for API calls
 import React, { useState } from 'react';
-import { getDeviceId } from '../utils/deviceId';
 import {
   Paper,
   Box,
