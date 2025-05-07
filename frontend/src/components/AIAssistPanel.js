@@ -1,3 +1,4 @@
+import axios from 'axios'; // Import axios for API calls
 import React, { useState } from 'react';
 import { getDeviceId } from '../utils/deviceId';
 import {
@@ -17,7 +18,14 @@ const AIAssistPanel = ({ open, onClose }) => {
   ]);
   const [input, setInput] = useState('');
 
+  const [sessionId, setSessionId] = useState(undefined);
+
   if (!open) return null;
+
+  const askAgent = async () => axios.post("https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/agent", {
+    sessionId,
+    query: input
+  })
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -25,11 +33,17 @@ const AIAssistPanel = ({ open, onClose }) => {
     setMessages(prev => [...prev, { from: 'user', text: input }]);
     setInput('');
 
-    // This is where the AI response would be
-    setTimeout(() => {
-      setMessages(prev => [...prev, { from: 'ai', text: 'Your device ID is, ' + getDeviceId() }]);
-    }, 600);
+    // add temporary message
+    setMessages(prev => [...prev, { from: 'ai', text: "..."}])
+    askAgent().then((response) => {
+      console.log(response);
+      const body = JSON.parse(response.data.body);
+      setSessionId(body.sessionId);
+      setMessages(prev => prev.map((e,i) => i === prev.length - 1 ? {from: "ai", text: body.response} : e)); //replace message
+    })
   };
+
+
 
   return (
     <Paper
