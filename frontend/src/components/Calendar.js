@@ -7,7 +7,8 @@ import { format } from 'date-fns';
 import EventDialog from './EventDialog';
 import {
   handleEventClick,
-  handleAddOrUpdateEvent,
+  handleAddEvent,
+  handleUpdateEvent,
   handleDeleteEvent,
   handleEventDrop,
   handleEventResize,
@@ -30,9 +31,14 @@ const FullCalendarView = () => {
 
   const onEventClick = (info) =>
     handleEventClick(info, setForm, setSelectedDate, setOpen, format);
-  const onAddOrUpdateEvent = () =>
-    handleAddOrUpdateEvent(form, setEvents, setForm, setError);
-  const onDeleteEvent = (id) =>
+  const onAddOrUpdateEvent = () => {
+    if (form.eventId) {
+      handleUpdateEvent(form, setEvents, setForm, setError);
+    } else {
+      handleAddEvent(form, setEvents, setForm, setError);
+    };
+  }; 
+    const onDeleteEvent = (id) =>
     handleDeleteEvent(id, setEvents, form, setForm);
   const onEventDrop = (info) =>
     handleEventDrop(info, setEvents);

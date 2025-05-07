@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios'; // Import axios for API calls
 import {
   Dialog,
   DialogContent,
@@ -18,116 +17,102 @@ const EventDialog = ({
   form,
   setForm,
   error,
+  onAddOrUpdateEvent,
   onDeleteEvent,
-}) => {
-  const handleAddOrUpdateEvent = async () => {
-    try {
-      const payload = {
-          title: form.title,
-          description: form.description,
-          start: new Date(`${form.startdate}`).toISOString(),
-          end: new Date(`${form.endDate}`).toISOString(),
-          host: 'user', // Replace with actual host data if available
-      };
+}) => (
+  <Dialog open={open} onClose={() => setOpen(false)} maxWidth="xs" fullWidth>
+    <DialogContent>
+      <Typography variant="h4">{form.eventId ? 'Edit Event' : 'Create New Event'}</Typography>
+      {error && <Alert severity="error" sx={{ mt: 1 }}>{error}</Alert>}
 
-      console.log('Payload:', payload); // Log the payload for debugging
-      const response = await axios.post('https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/events', payload);
-      console.log(response.data);
-      setOpen(false);
-    } catch (err) {
-      console.error('Error creating/updating event:', err);
-    }
-  };
+      <TextField
+        label="Title"
+        fullWidth
+        value={form.title}
+        onChange={e => setForm({ ...form, title: e.target.value })}
+        sx={{ mt: 1 }}
+      />
 
-  return (
-    <Dialog open={open} onClose={() => setOpen(false)} maxWidth="xs" fullWidth>
-      <DialogContent>
-        <Typography variant="h4">{form.eventId ? 'Edit Event' : 'Create New Event'}</Typography>
-        {error && <Alert severity="error" sx={{ mt: 1 }}>{error}</Alert>}
+      <TextField
+        label="Description"
+        fullWidth
+        multiline
+        value={form.description}
+        onChange={e => setForm({ ...form, description: e.target.value })}
+        sx={{ mt: 1 }}
+      />
 
-        <TextField
-          label="Title"
-          fullWidth
-          value={form.title}
-          onChange={e => setForm({ ...form, title: e.target.value })}
-          sx={{ mt: 1 }}
-        />
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <Stack spacing={1} sx={{ mt: 1 }}>
 
-        <TextField
-          label="Description"
-          fullWidth
-          multiline
-          value={form.description}
-          onChange={e => setForm({ ...form, description: e.target.value })}
-          sx={{ mt: 1 }}
-        />
+          <DatePicker
+            label="Start Date"
+            value={form.startdate}
+            onChange={(newValue) =>
+              setForm((prev) => ({ ...prev, startdate: newValue }))
+            }
+            renderInput={(params) => <TextField fullWidth {...params} />}
+          />
 
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Stack spacing={1} sx={{ mt: 1 }}>
+          <DatePicker
+            label="End Date"
+            value={form.endDate}
+            onChange={(newValue) =>
+              setForm((prev) => ({ ...prev, endDate: newValue }))
+            }
+            renderInput={(params) => <TextField fullWidth {...params} />}
+          />
 
-            <DatePicker
-              label="Start Date"
-              value={form.startdate}
-              onChange={(newValue) =>
-                setForm((prev) => ({ ...prev, startdate: newValue }))
-              }
-              renderInput={(params) => <TextField fullWidth {...params} />}
-            />
+          <TimePicker
+            label="Start Time"
+            value={form.startTime}
+            onChange={(newValue) =>
+              setForm((prev) => ({ ...prev, startTime: newValue }))
+            }
+            renderInput={(params) => <TextField fullWidth {...params} />}
+          />
 
-            <DatePicker
-              label="End Date"
-              value={form.endDate}
-              onChange={(newValue) =>
-                setForm((prev) => ({ ...prev, endDate: newValue }))
-              }
-              renderInput={(params) => <TextField fullWidth {...params} />}
-            />
+          <TimePicker
+            label="End Time"
+            value={form.endTime}
+            onChange={(newValue) =>
+              setForm((prev) => ({ ...prev, endTime: newValue }))
+            }
+            renderInput={(params) => <TextField fullWidth {...params} />}
+          />
 
-            <TimePicker
-              label="Start Time"
-              value={form.startTime}
-              onChange={(newValue) =>
-                setForm((prev) => ({ ...prev, startTime: newValue }))
-              }
-              renderInput={(params) => <TextField fullWidth {...params} />}
-            />
+        </Stack>
+      </LocalizationProvider>
 
-            <TimePicker
-              label="End Time"
-              value={form.endTime}
-              onChange={(newValue) =>
-                setForm((prev) => ({ ...prev, endTime: newValue }))
-              }
-              renderInput={(params) => <TextField fullWidth {...params} />}
-            />
+      <Button
+        onClick={() => {
+          onAddOrUpdateEvent();
+          setOpen(false);
+        }}
+        variant="contained"
+        color="primary"
+        fullWidth
+        sx={{ mt: 2 }}
+      >
+        {form.eventId ? 'Update Event' : 'Add Event'}
+      </Button>
 
-          </Stack>
-        </LocalizationProvider>
-
+      {form.eventId && (
         <Button
-          onClick={handleAddOrUpdateEvent}
-          variant="contained"
-          color="primary"
+          onClick={() => {
+            onDeleteEvent(form.eventId);
+            setOpen(false);
+          }}
+          variant="outlined"
+          color="error"
           fullWidth
           sx={{ mt: 2 }}
         >
-          {form.eventId ? 'Update Event' : 'Add Event'}
+          Delete Event
         </Button>
-
-        {form.eventId && (
-          <Button
-            onClick={() => onDeleteEvent(form.eventId)}
-            variant="outlined"
-            color="error"
-            fullWidth
-            sx={{ mt: 2 }}
-          >
-            Delete Event
-          </Button>
-        )}
-      </DialogContent>
-    </Dialog>
-  );
-};
+      )}
+    </DialogContent>
+  </Dialog>
+);
 
 export default EventDialog;
