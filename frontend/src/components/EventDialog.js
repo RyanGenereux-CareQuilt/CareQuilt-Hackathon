@@ -87,7 +87,6 @@ const EventDialog = ({
       <Button
         onClick={() => {
           onAddOrUpdateEvent();
-          setOpen(false);
         }}
         variant="contained"
         color="primary"
