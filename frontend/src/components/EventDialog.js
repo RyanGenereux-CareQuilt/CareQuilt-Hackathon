@@ -85,7 +85,10 @@ const EventDialog = ({
       </LocalizationProvider>
 
       <Button
-        onClick={onAddOrUpdateEvent}
+        onClick={() => {
+          onAddOrUpdateEvent();
+          setOpen(false);
+        }}
         variant="contained"
         color="primary"
         fullWidth
@@ -96,7 +99,10 @@ const EventDialog = ({
 
       {form.eventId && (
         <Button
-          onClick={() => onDeleteEvent(form.eventId)}
+          onClick={() => {
+            onDeleteEvent(form.eventId);
+            setOpen(false);
+          }}
           variant="outlined"
           color="error"
           fullWidth

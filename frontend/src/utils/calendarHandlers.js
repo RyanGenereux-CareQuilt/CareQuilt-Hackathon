@@ -19,9 +19,9 @@ export const handleEventClick = async(info, setForm, setSelectedDate, setOpen, f
   setSelectedDate(format(start, 'yyyy-MM-dd'));
   setOpen(true);
 };
-// Not posting right now, I am unsure why it might be because of the operation in payload
-export const handleAddEvent = async (form, setEvents, setForm, setError) => {
-  const { title, description, startdate, endDate, startTime, endTime } = form;
+
+export const handleAddEvent = async (form, setError) => {
+  const { title, startdate, endDate, startTime, endTime } = form;
   if (!title || !startdate || !endDate || !startTime || !endTime) {
     setError('All fields must be filled out.');
     return;
@@ -29,15 +29,12 @@ export const handleAddEvent = async (form, setEvents, setForm, setError) => {
 
   try {
     const payload = {
-      body: {
-        Id: crypto.randomUUID(),
         title: form.title,
         description: form.description,
         start: new Date(`${form.startdate}`).toISOString(),
         end: new Date(`${form.endDate}`).toISOString(),
         host: getDeviceId(),
         attendees: [],
-      },
     };
 
     console.log('Payload:', payload); // Log the payload for debugging
@@ -50,44 +47,22 @@ export const handleAddEvent = async (form, setEvents, setForm, setError) => {
 };
 
 
-export const handleUpdateEvent = async (form, setEvents, setForm, setError) => {
-  const { title, description, startdate, endDate, startTime, endTime, eventId } = form;
+export const handleUpdateEvent = async (form, setError) => {
+  const { title, startdate, endDate, startTime, endTime} = form;
   if (!title || !startdate || !endDate || !startTime || !endTime) {
     setError('All fields must be filled out.');
     return;
   }
 
-  const start = new Date(
-    startdate.getFullYear(),
-    startdate.getMonth(),
-    startdate.getDate(),
-    startTime.getHours(),
-    startTime.getMinutes()
-  );
-
-  const end = new Date(
-    endDate.getFullYear(),
-    endDate.getMonth(),
-    endDate.getDate(),
-    endTime.getHours(),
-    endTime.getMinutes()
-  );
-
-  if (end <= start) {
-    setError('End date/time must be after start date/time.');
-    return;
-  }
-  try{
-
+  try {
     const payload = {
-      body: {
-        id: eventId,
-        title,
-        description,
-        start: start.toISOString(),
-        end: end.toISOString(),
-        host: getDeviceId(),
-      },
+      id: form.eventId,
+      title: form.title,
+      description: form.description,
+      start: new Date(`${form.startdate}`).toISOString(),
+      end: new Date(`${form.endDate}`).toISOString(),
+      host: getDeviceId(),
+      attendees: [],
     };
     console.log('Payload:', payload); // Log the payload for debugging
       const response = await axios.put('https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/events', payload);
@@ -99,22 +74,20 @@ export const handleUpdateEvent = async (form, setEvents, setForm, setError) => {
   
 };
 
-export const handleDeleteEvent = async (id, setEvents, form, setForm, setError) => {
+export const handleDeleteEvent = async (id, setEvents, form, setError) => {
   setEvents(prev => prev.filter(e => e.id !== id));
   if (form.eventId === id) {
     
       try{
         const payload = {
-          body: {
-            id,
-            title: '',
-            description: '',
-            startdate: new Date(),
-            endDate: new Date(),
-            startTime: null,
-            endTime: null,
-            eventId: null,
-          },
+          id,
+          title: '',
+          description: '',
+          startdate: new Date(),
+          endDate: new Date(),
+          startTime: null,
+          endTime: null,
+          eventId: null,
         };
         console.log('Payload:', payload); // Log the payload for debugging
         const response = await axios.delete('https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/events', payload);
@@ -141,30 +114,28 @@ export const handleEventDrop = async (info, setEvents, setError) => {
     )
   );
 
-  try{
-
+  try {
     const payload = {
-      body: {
-        id,
-        title,
-        description: extendedProps?.description || '',
-        start: start.toISOString(),
-        end: end.toISOString(),
-        host: getDeviceId(),
-      },
+      id,
+      title,
+      description: extendedProps?.description || '',
+      start: start.toISOString(),
+      end: end ? end.toISOString() : start.toISOString(),
+      host: getDeviceId(),
+      attendees: extendedProps?.attendees || [],
     };
-    console.log('Payload:', payload); // Log the payload for debugging
-      const response = await axios.put('https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/events', payload);
-      console.log(response.data);
-      setError('');
-    } catch (err) {
-      console.error('Error updating event:', err)
-  };
-
+    console.log('Payload:', payload);
+    const response = await axios.put('https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/events', payload);
+    console.log(response.data);
+    setError && setError('');
+  } catch (err) {
+    console.error('Error updating event:', err);
+    setError && setError('Error updating event');
+  }
 };
 
 export const handleEventResize = async (info, setEvents, setError) => {
-  const { id, start, end, title, extendedProps} = info.event;
+  const { id, start, end, title, extendedProps } = info.event;
 
   setEvents((prev) =>
     prev.map((e) =>
@@ -178,23 +149,22 @@ export const handleEventResize = async (info, setEvents, setError) => {
     )
   );
 
-  try{
-
+  try {
     const payload = {
-      body: {
-        id,
-        title,
-        description: extendedProps?.description || '',
-        start: start.toISOString(),
-        end: end.toISOString(),
-        host: getDeviceId(),
-      },
+      id,
+      title,
+      description: extendedProps?.description || '',
+      start: start.toISOString(),
+      end: end.toISOString(),
+      host: getDeviceId(),
+      attendees: extendedProps?.attendees || [],
     };
-    console.log('Payload:', payload); // Log the payload for debugging
-      const response = await axios.put('https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/events', payload);
-      console.log(response.data);
-      setError('');
-    } catch (err) {
-      console.error('Error updating event:', err)
-  };
+    console.log('Payload:', payload);
+    const response = await axios.put('https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/events', payload);
+    console.log(response.data);
+    setError && setError('');
+  } catch (err) {
+    console.error('Error updating event:', err);
+    setError && setError('Error updating event');
+  }
 };
