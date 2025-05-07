@@ -10,7 +10,6 @@ import {
   Stack,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { LocalizationProvider } from '@mui/x-date-pickers';
 
 const AIAssistPanel = ({ open, onClose }) => {
   const [messages, setMessages] = useState([
@@ -24,7 +23,7 @@ const AIAssistPanel = ({ open, onClose }) => {
 
   const askAgent = async () => axios.post("https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/agent", {
     sessionId,
-    query: input
+    query: ( !sessionId ? "All times provided are offset by " + -1*(new Date().getTimezoneOffset()) + " minutes from UTC. Convert these times to UTC before creating and updating events." : "") + input
   })
 
   const handleSend = () => {
