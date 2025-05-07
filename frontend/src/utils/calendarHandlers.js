@@ -74,29 +74,28 @@ export const handleUpdateEvent = async (form, setError) => {
   
 };
 
-export const handleDeleteEvent = async (id, setEvents, form, setError) => {
-  setEvents(prev => prev.filter(e => e.id !== id));
-  if (form.eventId === id) {
-    
-      try{
-        const payload = {
-          id,
-          title: '',
-          description: '',
-          startdate: new Date(),
-          endDate: new Date(),
-          startTime: null,
-          endTime: null,
-          eventId: null,
-        };
-        console.log('Payload:', payload); // Log the payload for debugging
-        const response = await axios.delete('https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/events', payload);
-        console.log(response.data);
-        setError('');
-      } catch (err) {
-        console.error('Error creating event:', err)
+export const handleDeleteEvent = async (id, setEvents, form, setForm) => {
+  try {
+    console.log('Deleting event with ID:', id); // Debugging log
+    // Make an API call to delete the event from the database
+    await axios.delete(`https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/events/${id}`); // Replace with your actual API endpoint
+
+    // Update the frontend state
+    setEvents(prev => prev.filter(e => e.id !== id));
+    if (form.eventId === id) {
+      setForm({
+        title: '',
+        description: '',
+        startdate: new Date(),
+        endDate: new Date(),
+        startTime: null,
+        endTime: null,
+        eventId: null,
+      });
     }
-  }; 
+  } catch (error) {
+    console.error('Error deleting event:', error); // Debugging log
+  }
 };
 
 export const handleEventDrop = async (info, setEvents, setError) => {
