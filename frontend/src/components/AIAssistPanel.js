@@ -11,6 +11,7 @@ import {
   Stack,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 
 const AIAssistPanel = ({ open, onClose }) => {
   const [messages, setMessages] = useState([
@@ -36,10 +37,9 @@ const AIAssistPanel = ({ open, onClose }) => {
     // add temporary message
     setMessages(prev => [...prev, { from: 'ai', text: "..."}])
     askAgent().then((response) => {
-      console.log(response);
       const body = JSON.parse(response.data.body);
       setSessionId(body.sessionId);
-      setMessages(prev => prev.map((e,i) => i === prev.length - 1 ? {from: "ai", text: body.response} : e)); //replace message
+      setMessages(prev => prev.map((e,i) => i === prev.length - 1 ? {from: "ai", text: response.data.statusCode === 200 ? body.response : "An error occured. Please try again later"} : e)); //replace message
     })
   };
 
@@ -110,7 +110,7 @@ const AIAssistPanel = ({ open, onClose }) => {
         <Stack direction="row" spacing={1}>
           <TextField
             value={input}
-            onChange={e => setInput(e.target.value)}
+            onChange={e => setInput(e.target.value.trimStart())}
             onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
             placeholder="Type your message..."
             size="small"
