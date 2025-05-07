@@ -77,6 +77,18 @@ const FullCalendarView = () => {
   const onEventResize = (info) =>
     handleEventResize(info, setEvents);
 
+  const renderEventContent = (eventInfo) => (
+    <div style={{ color: '#000000' }}>
+      <b>{eventInfo.timeText}</b>
+      <div>{eventInfo.event.title}</div>
+      {eventInfo.event.extendedProps.description && (
+        <div style={{ fontSize: '0.85em', color: '#1E3D59' }}>
+          {eventInfo.event.extendedProps.description}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <>
       <FullCalendar
@@ -134,6 +146,7 @@ const FullCalendarView = () => {
           meridiem: 'short',
           hour12: true,
         }}
+        eventContent={renderEventContent}
         size="full"
       />
       <EventDialog
