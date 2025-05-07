@@ -1,4 +1,3 @@
-import { getDeviceId } from './deviceId';
 import axios from 'axios';
 
 export const handleEventClick = async(info, setForm, setSelectedDate, setOpen, format) => {
@@ -54,8 +53,6 @@ export const handleAddEvent = async (form, setEvents, setForm, setError, onSucce
       description,
       start: start.toISOString(),
       end: end.toISOString(),
-      host: getDeviceId(),
-      attendees: [],
     };
     console.log('Payload:', payload);
     const response = await axios.post('https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/events', payload);
@@ -135,8 +132,6 @@ export const handleUpdateEvent = async (form, setEvents, setForm, setError, onSu
       description,
       start: start.toISOString(),
       end: end.toISOString(),
-      host: getDeviceId(),
-      attendees: [],
     };
     console.log('Payload:', payload);
     const response = await axios.put('https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/events', payload);
@@ -214,8 +209,6 @@ export const handleEventDrop = async (info, setEvents, setError) => {
       description: extendedProps?.description || '',
       start: start.toISOString(),
       end: end ? end.toISOString() : start.toISOString(),
-      host: getDeviceId(),
-      attendees: extendedProps?.attendees || [],
     };
     console.log('Payload:', payload);
     const response = await axios.put('https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/events', payload);
@@ -249,8 +242,6 @@ export const handleEventResize = async (info, setEvents, setError) => {
       description: extendedProps?.description || '',
       start: start.toISOString(),
       end: end.toISOString(),
-      host: getDeviceId(),
-      attendees: extendedProps?.attendees || [],
     };
     console.log('Payload:', payload);
     const response = await axios.put('https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/events', payload);
