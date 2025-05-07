@@ -59,13 +59,23 @@ export const handleAddEvent = async (form, setEvents, setForm, setError, onSucce
     };
     console.log('Payload:', payload);
     const response = await axios.post('https://pm58gyiwt6.execute-api.us-east-2.amazonaws.com/v11/events', payload);
-    console.log(response.data);
     
+    // Parse the response body if it's a JSON string
+    const responseBody = typeof response.data.body === 'string' ? JSON.parse(response.data.body) : response.data.body;
+    console.log('Parsed Backend Response:', responseBody); // Debugging log
+
+    // Use the ID returned from the backend
+    const createdEvent = responseBody;
+    if (!createdEvent.id) {
+      console.error('Error: Backend did not return an ID for the created event.');
+      return;
+    }
+
     // Update the frontend state
     setEvents(prev => [
       ...prev,
       {
-        id: payload.id,
+        id: createdEvent.id, // Use the backend-generated ID
         title,
         description,
         start: start.toISOString(),

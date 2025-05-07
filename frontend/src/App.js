@@ -10,7 +10,7 @@ function App() {
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <header style={{ padding: '1rem', background: '#f5f5f5' }}>
-        <h1 style={{ margin: 0 }}>Calendar Application</h1>
+        <h1 style={{ margin: 0, textAlign: 'center' }}>Calendar Application</h1>
       </header>
 
       <main style={{ flex: 1 }}>

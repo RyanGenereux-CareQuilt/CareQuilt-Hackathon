@@ -101,7 +101,7 @@ const FullCalendarView = () => {
           },
         }}
         headerToolbar={{
-          left: 'prev,next, today',
+          left: 'prev,next today',
           center: 'title',
           right: 'addEventButton,dayGridMonth,timeGridDay,timeGridWeek',
         }}
