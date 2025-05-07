@@ -3,6 +3,7 @@ import Calendar from './components/Calendar';
 import AIAssistPanel from './components/AIAssistPanel';
 import { Button } from '@mui/material';
 import axios from 'axios';
+import './styles/styles.css';
 
 function App() {
   const [aiOpen, setAIOpen] = useState(false);
