@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-const AIAssistPanel = ({ open, onClose }) => {
+const AIAssistPanel = ({ open, onClose, fetchEvents }) => {
   const [messages, setMessages] = useState([
     { from: 'ai', text: 'How can I help you today?' },
   ]);
@@ -34,10 +34,11 @@ const AIAssistPanel = ({ open, onClose }) => {
 
     // add temporary message
     setMessages(prev => [...prev, { from: 'ai', text: "..."}])
-    askAgent().then((response) => {
+    askAgent().then(async (response) => {
       const body = JSON.parse(response.data.body);
       setSessionId(body.sessionId);
       setMessages(prev => prev.map((e,i) => i === prev.length - 1 ? {from: "ai", text: response.data.statusCode === 200 ? body.response : "An error occured. Please try again later"} : e)); //replace message
+      await fetchEvents(); // fetch events after getting response
     })
   };
 
