@@ -62,13 +62,16 @@ export const handleAddEvent = async (form, setEvents, setForm, setError, onSucce
     console.log(response.data);
     
     // Update the frontend state
-    setEvents(prev =>
-      prev.map(e =>
-        e.id === eventId
-          ? { ...e, title, description, start: start.toISOString(), end: end.toISOString() }
-          : e
-      )
-    );
+    setEvents(prev => [
+      ...prev,
+      {
+        id: payload.id,
+        title,
+        description,
+        start: start.toISOString(),
+        end: end.toISOString(),
+      }
+    ]);
 
     setError('');
     setForm({
@@ -80,6 +83,7 @@ export const handleAddEvent = async (form, setEvents, setForm, setError, onSucce
       endTime: null,
       eventId: null,
     });
+    
   if (onSuccess) onSuccess();
   } catch (err) {
     console.error('Error creating/updating event:', err);
