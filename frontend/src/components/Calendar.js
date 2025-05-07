@@ -101,23 +101,22 @@ const FullCalendarView = () => {
           },
         }}
         headerToolbar={{
-          left: 'prev,next today',
+          left: 'prev,next, today',
           center: 'title',
           right: 'addEventButton,dayGridMonth,timeGridDay,timeGridWeek',
+        }}
+        buttonText={{
+          today: 'Today',
         }}
         views={{
           dayGridMonth: {
             buttonText: 'Month'
           },
-          TimeGridDay: {
-            type: 'TimeGrid',
-            duration: { days: 1 },
+          timeGridDay: {
             buttonText: 'Day',
           },
-          TimeGridWeek: {
-            type: 'TimeGrid',
-            duration: { days: 7 },
-            buttonText: 'Week',
+          timeGridWeek: {
+            buttonText: 'Week'
           }
         }}
         height="100%"
