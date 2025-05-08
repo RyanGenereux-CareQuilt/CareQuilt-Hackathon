@@ -39,7 +39,10 @@ const AIAssistPanel = ({ open, onClose, fetchEvents }) => {
       setSessionId(body.sessionId);
       setMessages(prev => prev.map((e,i) => i === prev.length - 1 ? {from: "ai", text: response.data.statusCode === 200 ? body.response : "An error occured. Please try again later"} : e)); //replace message
       await fetchEvents(); // fetch events after getting response
-    })
+    }).catch((error) => {
+      console.error("Error:", error);
+      setMessages(prev => prev.map((e,i) => i === prev.length - 1 ? {from: "ai", text: "An error occured. Please try again later"} : e)); //replace message
+    });
   };
 
 
