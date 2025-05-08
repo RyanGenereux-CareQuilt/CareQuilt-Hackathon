@@ -1,5 +1,5 @@
 import axios from 'axios'; // Import axios for API calls
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Paper,
   Box,
@@ -15,9 +15,19 @@ const AIAssistPanel = ({ open, onClose, fetchEvents }) => {
   const [messages, setMessages] = useState([
     { from: 'ai', text: 'How can I help you today?' },
   ]);
+
+  useEffect(() => {
+    if (messagesBox.current) {
+      messagesBox.current.scrollTop = messagesBox.current.scrollHeight;
+    }
+  }, [messages]);
+
   const [input, setInput] = useState('');
+  const [waitingForResponse, setWaitingForResponse] = useState(false);
 
   const [sessionId, setSessionId] = useState(undefined);
+
+  const messagesBox = React.useRef(null);
 
   if (!open) return null;
 
@@ -27,10 +37,11 @@ const AIAssistPanel = ({ open, onClose, fetchEvents }) => {
   })
 
   const handleSend = () => {
-    if (!input.trim()) return;
+    if (!input.trim() || waitingForResponse) return;
 
     setMessages(prev => [...prev, { from: 'user', text: input }]);
     setInput('');
+    setWaitingForResponse(true);
 
     // add temporary message
     setMessages(prev => [...prev, { from: 'ai', text: "..."}])
@@ -42,6 +53,8 @@ const AIAssistPanel = ({ open, onClose, fetchEvents }) => {
     }).catch((error) => {
       console.error("Error:", error);
       setMessages(prev => prev.map((e,i) => i === prev.length - 1 ? {from: "ai", text: "An error occured. Please try again later"} : e)); //replace message
+    }).finally(() => {
+      setWaitingForResponse(false);
     });
   };
 
@@ -81,6 +94,7 @@ const AIAssistPanel = ({ open, onClose, fetchEvents }) => {
       </Box>
 
       <Box
+        ref={messagesBox}
         sx={{
           flexGrow: 1,
           p: 1,
